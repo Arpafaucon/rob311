@@ -1,8 +1,15 @@
 #/usr/bin/python3
 # coding: utf-8
+"""
+K-nearest neighbor algorithm
 
-from sklearn.neighbors import NearestNeighbors
-from sklearn import datasets
+Expects in the same directory the files:
+- haberman.data
+- haberman.names
+- iris.data
+- iris.names
+"""
+
 import numpy as np
 import pandas
 import seaborn as sns
@@ -72,14 +79,23 @@ def score_knn(test_dataset, training_dataset, distance_fn, K):
         K (int): number of nearest neighbours
     """
     correct_prediction = 0
+    classes_list = list(training_dataset['class'].unique())
+    class_indices = {v:i for i,v in enumerate(classes_list)}
+    confusion_matrix = [[0]* len(classes_list) for _ in classes_list] 
     for _, tested in test_dataset.iterrows():
         # print(tested)
+        
         knn_class = knn_classify(tested, training_dataset, distance_fn, K)
+        
         if knn_class  == tested['class']:
             correct_prediction += 1
+        knn_index = class_indices[knn_class]
+        real_index = class_indices[tested['class']]
+        confusion_matrix[real_index][knn_index] += 1
         # break
     print('correct: {:.2f} ( {} / {})'.format(correct_prediction/len(test_dataset), correct_prediction, len(test_dataset))) 
-    return(correct_prediction, len(test_dataset))
+    print('confusion matrix:', confusion_matrix)
+    return(correct_prediction, len(test_dataset), confusion_matrix, classes_list)
 
 
 def split_dataset(dataset, training_ratio = 0.66):
@@ -102,12 +118,18 @@ def iris(graphs = True):
     # iris dataset
     print('With IRIS dataset')
     data =  pandas.read_csv('iris.data', names=['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'class'])
-    if graphs:
-        sns.pairplot(data, hue='class')
-        plt.show()
+    # if graphs:
+    #     sns.pairplot(data, hue='class')
+    #     plt.show()
     training, test = split_dataset(data)
     iris_distance = euc_distance_function(num_features=4)
-    score_knn(test, training, iris_distance, 3)
+    _, _, conf_mat, clist = score_knn(test, training, iris_distance, 3)
+    if graphs:
+        ax = sns.heatmap(conf_mat, annot=True, fmt='d', xticklabels=clist, yticklabels=clist)
+        ax.set_xlabel('K-NN class')
+        ax.set_ylabel('Real class')
+        plt.show()
+    
 
 def hab(graphs=True):
     # haberman dataset
@@ -118,12 +140,17 @@ def hab(graphs=True):
         plt.show()
     training, test = split_dataset(data)
     hab_distance = euc_distance_function(num_features=3)
-    score_knn(test, training, hab_distance, 3)
+    _, _, conf_mat, clist = score_knn(test, training, hab_distance, 3)
+    if graphs:
+        sns.heatmap(conf_mat, annot=True, fmt='d', xticklabels=clist, yticklabels=clist)
+        plt.show()
+
 
 
 def main():
-    # iris()
-    hab()
+    # select either dataset
+    iris(graphs=not False)
+    # hab()
 
 if __name__ == '__main__':
     main()
