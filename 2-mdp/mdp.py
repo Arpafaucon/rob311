@@ -245,20 +245,31 @@ def value_iteration(gamma = GAMMA, epsilon=EPSILON):
         epsilon (float, optional): Defaults to EPSILON. Distance min between two iteration to keep going on
     """
     board = [0]*ARENA_SIZE
+    policy = []
+    delta = 0
     done = False
     iteration_num = 0
-    print('>>> Value Iteration for \u03b3 = {} ; \u03b5 = {}'.format(gamma, epsilon))
+    print('{}>>> Value Iteration for \u03b3 = {} ; \u03b5 = {}{}'.format(color.BOLD+color.DARKCYAN, gamma, epsilon, color.END))
+    
     while not done:
+        p_board, p_policy, p_delta = board, policy, delta
         iteration_num += 1
         nboard, policy = next_board_values(board, gamma)
         delta = rms_board(board, nboard)
-        done = (delta < epsilon)
+        done = (delta <= epsilon)
         board = nboard
-    print('{}convergence in {} steps{}'.format(color.BOLD+color.BLUE , iteration_num, color.END+color.END))
+    print('{}convergence in {} steps (\u03b4={:.8f}) {} '.format(color.RED , iteration_num, delta, color.END))
     print('{}Value Map:{}'.format(color.UNDERLINE, color.END))
     print_board_values(board)
     print('{}Policy:{}'.format(color.UNDERLINE, color.END))
     print_policy(policy)
+    print('\n')
+    # print('{}{}\n'.format(color.PURPLE, color.END))
+    print('{}previous state (step {},  \u03b4={:.6f}) {} '.format(color.PURPLE , iteration_num-1, p_delta, color.END))
+    print('{}Value Map:{}'.format(color.UNDERLINE, color.END))
+    print_board_values(p_board)
+    print('{}Policy:{}'.format(color.UNDERLINE, color.END))
+    print_policy(p_policy)
     print('\n')
 
 
