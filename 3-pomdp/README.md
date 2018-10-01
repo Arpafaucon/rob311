@@ -37,3 +37,6 @@ Starting POMDP with
 0.058 0.001 0.058 0.001 0.058 0.073 0.008 0.743
 
 ```
+
+`NOTE` : there are color codes in the display to help understanding. For example, in state vectors, the biggest values are colored to stand out of the others.
+
