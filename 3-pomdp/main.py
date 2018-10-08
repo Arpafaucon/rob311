@@ -93,6 +93,13 @@ SE_1 = np.ones(NUM_STATES) / NUM_STATES
 LOG = [('R', 'L'),
        ('D', 'U')]
 
+# starting from state 4
+LOG2 = [('R', 'L'),
+       ('L', 'U'), #impossible ! should be X
+       ('L', 'T'),
+       ('R', 'T') # expected: state 4
+       ]
+
 
 class color:
     """
@@ -227,7 +234,7 @@ def journey(initial_state_vector, log, case='0'):
     print('Starting POMDP with')
     print_state(initial_state_vector)
     print('\n')
-    for i, log_entry in enumerate(log):
+    for i, log_entry in enumerate(log, 1):
         action, observation = log_entry
         print('>>> {}Step {} (action={}, observed={}){}'.format(
             color.RED,  i, action, observation, color.END))
@@ -238,7 +245,8 @@ def journey(initial_state_vector, log, case='0'):
 
 def main():
     journey(SE_0, LOG, 'Localized')
-    journey(SE_18, LOG, 'Uniform Dist')
+    journey(SE_1, LOG, 'Uniform Dist')
+    journey(SE_1, LOG2, 'Mistake')
 
 
 if __name__ == '__main__':
