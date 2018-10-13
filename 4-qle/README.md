@@ -1,10 +1,23 @@
 # Q-Learning with Pacman
 Grégoire Roussel
+
 8/10/2018
+
 This TP develops the Markov decision approach with Q-Learning and approximate Q-Learning
 
+## Usage
+```sh
+cd pacman
+# basic QLearning agent
+python pacman.py -l smallGrid -x 3000 -n 3010 -p PacmanQAgent
 
-## Results with basic QLearning
+# Approximate QLearning agent
+python pacman.py -l originalClassic -x 20 -n 25 -p ApproximateQAgent -a extractor=SimpleExtractor
+```
+
+## Results 
+
+### basic QLearning
 - mediumGrid, with 15k training iterations (10 min)
 ```
 Average Score: 271.6
@@ -16,7 +29,7 @@ Record:        Win, Win, Win, Loss, Loss, Win, Win, Win, Win, Win, Win, Win, Win
 - classicGrid, with 50k iterations (around 1h30)
 didn't finish, after taking 30Gb+ of RAM...
 
-## Results with approximate QAgent
+### approximate QAgent
 
 - mediumClassic, 50 training iterations & SimpleExtractor
 Training time was around 10sec
@@ -39,7 +52,7 @@ Record:        Win, Win, Win, Win, Loss
 ```
 Yes, he lost once, being trapped between two ghosts. That is a mistake rather hard to avoid, as the bad decision happens 10+ moves before the negative reward (aka death).
 
-#### Remark:
+## Remark:
 An analysis of the feature extractors confirms that, for now, the feature vector doesn't take into account the `power-mode` of Pacman (during which he could eat the ghosts, win more points and loose less time). 
 
-That could be implemented as an additionnal feature `eatGhost`, that is 1 if Pac-Man is in `power-mode` and there is a ghost in the next cell.
+That could be implemented as an additionnal feature `eatGhost`, that is 1.0 if Pac-Man is in `power-mode` and there is a ghost in the next cell. The rest of the time the value is 0.
