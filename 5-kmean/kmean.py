@@ -219,5 +219,5 @@ def analysis(n_clusters=12):
 if __name__ == '__main__':
     plt.ion()
     compare_num_clusters()
-    analysis(12)
+    analysis(10)
     plt.waitforbuttonpress()
